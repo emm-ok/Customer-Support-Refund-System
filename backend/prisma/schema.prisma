@@ -1,0 +1,282 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ENUMS
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum RefundRequestStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum RefundDecision {
+  PENDING
+  APPROVED
+  DENIED
+  ESCALATED
+}
+
+enum RefundIntent {
+  REFUND_REQUEST
+}
+
+enum RefundIssueType {
+  DAMAGED_ITEM
+  INCORRECT_ITEM
+  MISSING_ITEM
+  WRONG_SIZE
+  CUSTOMER_CHANGED_MIND
+  DEFECTIVE_ITEM
+  OTHER
+  SUSPICIOUS
+}
+
+enum AuditEventType {
+  REFUND_CREATED
+  CUSTOMER_IDENTIFIED
+  ORDER_RETRIEVED
+  AI_ANALYSIS_STARTED
+  AI_ANALYSIS_COMPLETED
+  AI_ANALYSIS_FAILED
+  POLICY_EVALUATION_STARTED
+  POLICY_EVALUATION_COMPLETED
+  REFUND_APPROVED
+  REFUND_DENIED
+  REFUND_ESCALATED
+  PROCESSING_FAILED
+}
+
+enum PolicyResult {
+  PASSED
+  FAILED
+  TRIGGERED
+  NOT_APPLICABLE
+}
+
+// CUSTOMER
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders        Order[]
+  refundRequests RefundRequest[]
+
+  @@index([email])
+  @@map("customers")
+}
+
+// ORDER
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  customerId  String
+
+  status      OrderStatus @default(DELIVERED)
+  totalAmount Decimal     @db.Decimal(12, 2)
+  currency    String      @default("USD")
+  orderedAt   DateTime
+  deliveredAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId],references: [id],onDelete: Cascade)
+
+  items OrderItem[]
+
+  refundRequests RefundRequest[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderedAt])
+  @@map("orders")
+}
+
+// ORDER ITEM
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+
+  productName String
+  quantity    Int     @default(1)
+  unitPrice   Decimal @db.Decimal(12, 2)
+
+  // Refund-policy-related information
+  isFinalSale Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId],references: [id],onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// REFUND REQUEST
+model RefundRequest {
+  id String @id @default(cuid())
+
+  customerId String
+  orderId    String
+
+  // Customer's original free-text explanation
+  reason String @db.Text
+
+  // Amount being evaluated for the refund.
+  // Keeping it separate allows partial refunds later.
+  requestedAmount Decimal @db.Decimal(12, 2)
+  currency        String  @default("USD")
+
+  status   RefundRequestStatus @default(PROCESSING)
+  decision RefundDecision      @default(PENDING)
+
+  // Final human-readable explanation returned to the customer/admin.
+  decisionReason String? @db.Text
+
+  // Indicates that this request was escalated for human review.
+  escalatedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId],references: [id],onDelete: Restrict)
+
+  order Order @relation(fields: [orderId],references: [id],onDelete: Restrict)
+
+  aiAnalysis        AIAnalysis?
+  policyEvaluation  PolicyEvaluation?
+  auditLogs         AuditLog[]
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([decision])
+  @@index([status])
+  @@index([createdAt])
+  @@map("refund_requests")
+}
+
+// AI ANALYSIS
+//
+// Stores what the AI understood from the customer's message.
+model AIAnalysis {
+  id              String @id @default(cuid())
+  refundRequestId String @unique
+
+  // Structured AI classification
+  intent    RefundIntent
+  issueType RefundIssueType
+
+  // AI's interpretation of the customer's request
+  summary String @db.Text
+
+  // Extracted amount, if the customer explicitly mentions one.
+  extractedAmount Decimal? @db.Decimal(12, 2)
+
+  // Confidence returned by the AI, if supported.
+  confidence Decimal? @db.Decimal(5, 4)
+
+  // Version of the prompt/schema used.
+  promptVersion String?
+
+  // Whether the AI identified the request as potentially suspicious.
+  isSuspicious Boolean @default(false)
+
+  // Optional explanation for suspicious classification.
+  suspiciousReason String? @db.Text
+
+  // Stores validated structured AI response.
+  rawOutput Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+
+  @@index([intent])
+  @@index([issueType])
+  @@index([isSuspicious])
+  @@map("ai_analyses")
+}
+
+// POLICY EVALUATION
+model PolicyEvaluation {
+  id              String @id @default(cuid())
+  refundRequestId String @unique
+
+  decision RefundDecision
+
+  // Version of the refund policy used.
+  policyVersion String @default("1.0")
+
+  // Individual policy checks.
+  orderExistsCheck      PolicyResult
+  refundWindowCheck     PolicyResult
+  finalSaleCheck        PolicyResult
+  eligibleIssueCheck    PolicyResult
+  amountThresholdCheck  PolicyResult
+  suspiciousRequestCheck PolicyResult
+
+  // Human-readable explanation of the evaluation.
+  reason String @db.Text
+
+  checks Json?
+
+  // Rules that directly caused denial/escalation.
+  triggeredRules Json?
+
+  evaluatedAt DateTime @default(now())
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+
+  @@index([decision])
+  @@index([policyVersion])
+  @@index([evaluatedAt])
+  @@map("policy_evaluations")
+}
+
+// AUDIT LOG
+// Provides an audit trail of the refund-processing workflow for the admin/support dashboard.
+
+model AuditLog {
+  id              String          @id @default(cuid())
+
+  refundRequestId String
+
+  eventType AuditEventType
+
+  // Human-readable description of what happened.
+  message String @db.Text
+
+  // Additional structured information.
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+
+  @@index([refundRequestId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
