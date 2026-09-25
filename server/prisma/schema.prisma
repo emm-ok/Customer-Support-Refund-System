@@ -74,11 +74,11 @@ enum PolicyResult {
 model Customer {
   id        String   @id @default(cuid())
   email     String   @unique
-  name String
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders        Order[]
+  orders         Order[]
   refundRequests RefundRequest[]
 
   @@index([email])
@@ -87,8 +87,8 @@ model Customer {
 
 // ORDER
 model Order {
-  id          String      @id @default(cuid())
-  orderNumber String      @unique
+  id          String @id @default(cuid())
+  orderNumber String @unique
   customerId  String
 
   status      OrderStatus @default(DELIVERED)
@@ -100,7 +100,7 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer Customer @relation(fields: [customerId],references: [id],onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   items OrderItem[]
 
@@ -127,7 +127,7 @@ model OrderItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order Order @relation(fields: [orderId],references: [id],onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@map("order_items")
@@ -160,13 +160,13 @@ model RefundRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer Customer @relation(fields: [customerId],references: [id],onDelete: Restrict)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
 
-  order Order @relation(fields: [orderId],references: [id],onDelete: Restrict)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
 
-  aiAnalysis        AIAnalysis?
-  policyEvaluation  PolicyEvaluation?
-  auditLogs         AuditLog[]
+  aiAnalysis       AIAnalysis?
+  policyEvaluation PolicyEvaluation?
+  auditLogs        AuditLog[]
 
   @@index([customerId])
   @@index([orderId])
@@ -211,7 +211,7 @@ model AIAnalysis {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id], onDelete: Cascade)
 
   @@index([intent])
   @@index([issueType])
@@ -230,11 +230,11 @@ model PolicyEvaluation {
   policyVersion String @default("1.0")
 
   // Individual policy checks.
-  orderExistsCheck      PolicyResult
-  refundWindowCheck     PolicyResult
-  finalSaleCheck        PolicyResult
-  eligibleIssueCheck    PolicyResult
-  amountThresholdCheck  PolicyResult
+  orderExistsCheck       PolicyResult
+  refundWindowCheck      PolicyResult
+  finalSaleCheck         PolicyResult
+  eligibleIssueCheck     PolicyResult
+  amountThresholdCheck   PolicyResult
   suspiciousRequestCheck PolicyResult
 
   // Human-readable explanation of the evaluation.
@@ -247,7 +247,7 @@ model PolicyEvaluation {
 
   evaluatedAt DateTime @default(now())
 
-  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id], onDelete: Cascade)
 
   @@index([decision])
   @@index([policyVersion])
@@ -259,7 +259,7 @@ model PolicyEvaluation {
 // Provides an audit trail of the refund-processing workflow for the admin/support dashboard.
 
 model AuditLog {
-  id              String          @id @default(cuid())
+  id String @id @default(cuid())
 
   refundRequestId String
 
@@ -273,7 +273,7 @@ model AuditLog {
 
   createdAt DateTime @default(now())
 
-  refundRequest RefundRequest @relation(fields: [refundRequestId],references: [id],onDelete: Cascade)
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id], onDelete: Cascade)
 
   @@index([refundRequestId])
   @@index([eventType])

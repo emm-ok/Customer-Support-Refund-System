@@ -59,6 +59,7 @@ export async function processRefund(
         },
         include: {
             items: true,
+            refundRequests: true
         },
     });
 
@@ -67,6 +68,8 @@ export async function processRefund(
             "Order not found for this customer."
         );
     }
+
+    
 
     //  2. Create refund request.
 

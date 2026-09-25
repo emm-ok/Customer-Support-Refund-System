@@ -25,8 +25,6 @@ export async function createRefund(
     console.log("Validation");
 
     if (!validation.valid || !validation.data) {
-    console.log("Validating refund request input");
-
       return res.status(400).json({
         success: false,
         message:

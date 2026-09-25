@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import {
-  CheckCircle2,
   LogOut,
-  X,
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
@@ -69,27 +67,15 @@ export default function OrdersPage() {
     setCustomer(storedCustomer);
   }, [router]);
 
-  /*
-   * -----------------------------------------
-   * Orders query
-   * -----------------------------------------
-   */
+  // Orders query
 
   const ordersQuery = useCustomerOrders(customer?.id);
 
-  /*
-   * -----------------------------------------
-   * Refund mutation
-   * -----------------------------------------
-   */
+  //  Refund mutation
 
   const refundMutation = useCreateRefund();
 
-  /*
-   * -----------------------------------------
-   * Logout / reset customer session
-   * -----------------------------------------
-   */
+  //  Logout / reset customer session
 
   const handleLogout = () => {
     clearCustomerSession();
@@ -101,17 +87,11 @@ export default function OrdersPage() {
     router.replace("/identity");
   };
 
-  /*
-   * -----------------------------------------
-   * Open refund modal
-   * -----------------------------------------
-   */
+  // Open refund modal
 
   const handleRequestRefund = (order: Order) => {
-    /*
-     * Clear previous mutation state before
-     * opening the form for another order.
-     */
+    //  Clear previous mutation state before
+    //  opening the form for another order.
     refundMutation.reset();
 
     setRefundResult(null);
@@ -119,11 +99,8 @@ export default function OrdersPage() {
     setRefundModalOpen(true);
   };
 
-  /*
-   * -----------------------------------------
-   * Close refund modal
-   * -----------------------------------------
-   */
+
+  // Close refund modal
 
   const handleCloseRefundModal = () => {
     if (refundMutation.isPending) {
@@ -132,21 +109,15 @@ export default function OrdersPage() {
 
     setRefundModalOpen(false);
 
-    /*
-     * Give the exit animation time to finish,
-     * then clear the selected order.
-     */
+    // Give the exit animation time to finish,
+    //  then clear the selected order.
     setTimeout(() => {
       setRefundOrder(null);
       refundMutation.reset();
     }, 250);
   };
 
-  /*
-   * -----------------------------------------
-   * Submit refund request
-   * -----------------------------------------
-   */
+  //  Submit refund request
 
   const handleSubmitRefund = (
     order: Order,
@@ -167,26 +138,18 @@ export default function OrdersPage() {
           setRefundResult(response);
           console.log("Response", response)
 
-          /*
-           * Close the form after successful processing.
-           */
+          //  Close the form after successful processing.
           setRefundModalOpen(false);
 
-          /*
-           * Keep the result available so it can be
-           * displayed to the customer.
-           */
+          //  Keep the result available so it can be
+            // displayed to the customer.
           setRefundOrder(null);
         },
       }
     );
   };
 
-  /*
-   * -----------------------------------------
-   * Customer loading
-   * -----------------------------------------
-   */
+  //  Customer loading
 
   if (!customer) {
     return (
@@ -198,11 +161,7 @@ export default function OrdersPage() {
 
   const orders = ordersQuery.data?.data.orders ?? [];
 
-  /*
-   * -----------------------------------------
-   * Refund API error
-   * -----------------------------------------
-   */
+  //  Refund API error
 
   const refundError = (() => {
     if (!refundMutation.error) {
@@ -240,7 +199,7 @@ export default function OrdersPage() {
               onClick={() => router.push("/identity")}
               className="text-left text-lg font-semibold tracking-tight text-slate-950"
             >
-              ResolveHub
+              RefundFlow
             </button>
 
             <button
@@ -286,7 +245,7 @@ export default function OrdersPage() {
                     ordersQuery.error
                   )
                     ? ordersQuery.error.response?.data
-                        ?.message
+                      ?.message
                     : undefined
                 }
               />

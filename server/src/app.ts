@@ -4,6 +4,7 @@ import cors from "cors";
 import { env } from "./config/env.ts";
 import customerRoutes from "./modules/customer/customer.route.ts";
 import refundRoutes from "./modules/refund/refund.route.ts";
+import adminRoutes from "./modules/admin/admin.route.ts";
 import { prisma } from "./lib/prisma.ts";
 
 const app: Application = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use("/api/customers", customerRoutes);
 app.use("/api/refunds", refundRoutes);
+app.use("/api/admin", adminRoutes);
 // app.get("/auditLogs", async (req, res) => {
 //   const auditLogs = await prisma.auditLog.findMany();
 //   res.json(auditLogs);
