@@ -55,3 +55,43 @@ export interface GetCustomerOrdersResponse {
     count: number;
   };
 }
+
+export interface CreateRefundRequest {
+  customerId: string;
+  orderId: string;
+  reason: string;
+}
+
+export type RefundDecision =
+  | "PENDING"
+  | "APPROVED"
+  | "DENIED"
+  | "ESCALATED";
+
+export type RefundRequestStatus =
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED";
+
+export interface RefundResponse {
+  id: string;
+  customerId: string;
+  orderId: string;
+  reason: string;
+  requestedAmount: string | number;
+  currency: string;
+  status: RefundRequestStatus;
+  decision: RefundDecision;
+  decisionReason: string | null;
+  escalatedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateRefundResponse {
+  success: boolean;
+  message: string;
+  data: {
+    refund: RefundResponse;
+  };
+}

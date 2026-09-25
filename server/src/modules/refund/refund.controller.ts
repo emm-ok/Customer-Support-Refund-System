@@ -19,10 +19,14 @@ export async function createRefund(
 ) {
   try {
     //  1. Validate HTTP input.
+    console.log("Refund Request started");
     const validation =
-      validateCreateRefundInput(req.body);
+    validateCreateRefundInput(req.body);
+    console.log("Validation");
 
     if (!validation.valid || !validation.data) {
+    console.log("Validating refund request input");
+
       return res.status(400).json({
         success: false,
         message:
@@ -36,6 +40,8 @@ export async function createRefund(
       await processRefund(
         validation.data
       );
+    console.log("Refund", refund);
+
 
     //  3. Return final result.
     return res.status(201).json({
