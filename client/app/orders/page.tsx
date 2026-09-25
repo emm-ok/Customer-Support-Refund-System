@@ -1,8 +1,8 @@
-import React from 'react'
+import OrdersPage from '@/components/orders/OrdersPage'
 
 const OrderPage = () => {
   return (
-    <div>OrderPage</div>
+    <OrdersPage />
   )
 }
 

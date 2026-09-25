@@ -11,6 +11,7 @@ import Alert from "@/components/ui/Alert";
 
 import { useIdentifyCustomer } from "@/hooks/useIdentifyCustomer";
 import { ApiErrorResponse } from "@/types/customer";
+import { saveCustomerSession } from "@/lib/customer-session";
 
 export default function IdentityForm() {
     const router = useRouter();
@@ -52,14 +53,7 @@ export default function IdentityForm() {
                     const customer = response.data.customer;
 
                     //    Stores only the minimum context required for the next screen.
-                    sessionStorage.setItem(
-                        "csrs_customer",
-                        JSON.stringify({
-                            id: customer.id,
-                            name: customer.name,
-                            email: customer.email,
-                        })
-                    );
+                    saveCustomerSession(customer);
 
                     router.push("/orders");
                 },
