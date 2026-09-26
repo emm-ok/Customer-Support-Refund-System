@@ -132,7 +132,6 @@ export default function OrdersPage() {
       {
         onSuccess: (response) => {
           setRefundResult(response);
-          console.log("Response", response)
 
           //  Close the form after successful processing.
           setRefundModalOpen(false);
