@@ -264,8 +264,6 @@ function EmptyState({
 }
 
 export default function AdminRefundRequests() {
-    const router = useRouter();
-
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] =
         useState("");
