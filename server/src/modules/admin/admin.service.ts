@@ -5,7 +5,7 @@ import {
   RefundRequestStatus,
 } from "@prisma/client";
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 interface GetRefundsOptions {
   page: number;

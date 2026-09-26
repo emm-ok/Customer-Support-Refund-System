@@ -5,7 +5,7 @@ import {
   getRefunds,
   getRefund,
   getAuditLogs,
-} from "./admin.controller";
+} from "./admin.controller.js";
 
 const router = Router();
 

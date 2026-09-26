@@ -6,11 +6,11 @@ import {
 
 import {
   processRefund,
-} from "./refund.service.ts";
+} from "./refund.service.js";
 
 import {
   validateCreateRefundInput,
-} from "../../validators/refund.validator.ts";
+} from "../../validators/refund.validator.js";
 
 export async function createRefund(
   req: Request,

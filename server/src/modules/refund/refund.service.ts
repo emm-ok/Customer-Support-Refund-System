@@ -4,20 +4,20 @@ import {
     RefundRequestStatus,
 } from "@prisma/client";
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 import {
     analyzeRefundReason,
-} from "../../services/ai.service";
+} from "../../services/ai.service.js";
 
 import {
     evaluateRefundPolicy,
-} from "../../services/policy.service.ts";
+} from "../../services/policy.service.js";
 
 import {
     validateAIAnalysis,
     ValidatedAIAnalysis,
-} from "../../validators/ai.validator.ts";
+} from "../../validators/ai.validator.js";
 
 export interface ProcessRefundInput {
     customerId: string;

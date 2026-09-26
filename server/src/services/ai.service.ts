@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { RefundIntent, RefundIssueType } from "@prisma/client";
-import { env } from "../config/env.ts";
-import { SYSTEM_PROMPT } from "../lib/aiPrompt.ts";
+import { env } from "../config/env.js";
+import { SYSTEM_PROMPT } from "../lib/aiPrompt.js";
 
 export interface RefundAIInput {
   reason: string;

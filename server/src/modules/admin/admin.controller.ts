@@ -4,7 +4,7 @@ import {
   getAdminRefunds,
   getAdminRefundById,
   getAdminAuditLogs,
-} from "./admin.service";
+} from "./admin.service.js";
 
 import {
   AuditEventType,

@@ -1,11 +1,11 @@
 import express from "express";
 import type { Application } from "express";
 import cors from "cors";
-import { env } from "./config/env.ts";
-import customerRoutes from "./modules/customer/customer.route.ts";
-import refundRoutes from "./modules/refund/refund.route.ts";
-import adminRoutes from "./modules/admin/admin.route.ts";
-import { prisma } from "./lib/prisma.ts";
+import { env } from "./config/env.js";
+import customerRoutes from "./modules/customer/customer.route.js";
+import refundRoutes from "./modules/refund/refund.route.js";
+import adminRoutes from "./modules/admin/admin.route.js";
+import { prisma } from "./lib/prisma.js";
 
 const app: Application = express();
 

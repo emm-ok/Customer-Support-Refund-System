@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {
   createRefund,
-} from "./refund.controller.ts";
+} from "./refund.controller.js";
 
 const router = Router();
 
