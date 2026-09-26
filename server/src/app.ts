@@ -24,6 +24,12 @@ app.use("/api/admin", adminRoutes);
 //   res.json(auditLogs);
 // });
 
+app.get("/health", async(req, res) => {
+  return res.json({
+    message: "Server is running"
+  })
+})
+
 // Global error handler
 app.use(
   (error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

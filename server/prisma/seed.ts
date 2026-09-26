@@ -10,7 +10,7 @@ import {
     PolicyResult,
 } from "@prisma/client";
 
-import { prisma } from "../src/lib/prisma.ts";
+import { prisma } from "../src/lib/prisma.js";
 
 declare const process: {
     exit(code?: number): never;
