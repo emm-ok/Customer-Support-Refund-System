@@ -1,7 +1,7 @@
 import IdentityHeader from "./IdentityHeader";
 import IdentityForm from "./IdentityForm";
 import IdentityTrustFooter from "./IdentityTrustFooter";
-import CSRSLogo from "./Logo";
+import RefundFlowLogo from "./Logo";
 
 export default function IdentityPage() {
     return (
@@ -15,7 +15,7 @@ export default function IdentityPage() {
 
             <div className="relative flex min-h-screen items-center justify-center px-5 py-12 sm:px-6">
                 <div className="w-full max-w-md space-y-6">
-                    <CSRSLogo />
+                    <RefundFlowLogo />
                     <IdentityHeader />
 
                     <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_20px_70px_-30px_rgba(15,23,42,0.25)] sm:p-8">
@@ -25,7 +25,7 @@ export default function IdentityPage() {
                     </div>
 
                     <p className="mt-6 text-center text-xs text-slate-400">
-                        Powered by CSRS
+                        Powered by RefundFlow
                     </p>
                 </div>
             </div>

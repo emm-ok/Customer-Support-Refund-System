@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 
-export default function CSRSLogo() {
+export default function RefundFlowLogo() {
   return (
     <div className="flex items-center justify-center gap-2">
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950">

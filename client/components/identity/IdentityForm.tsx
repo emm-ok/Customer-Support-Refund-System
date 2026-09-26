@@ -12,6 +12,7 @@ import Alert from "@/components/ui/Alert";
 import { useIdentifyCustomer } from "@/hooks/useIdentifyCustomer";
 import { ApiErrorResponse } from "@/types/customer";
 import { saveCustomerSession } from "@/lib/customer-session";
+import Link from "next/link";
 
 export default function IdentityForm() {
     const router = useRouter();
@@ -148,6 +149,17 @@ export default function IdentityForm() {
                     </div>
                 ))}
             </div>
+
+            <Link href="/admin"
+                className={`
+                bg-neutral-900 text-white
+                w-full px-6 py-3
+                font-medium border border-gray-300 
+                opacity-80 transition-all duration-200
+                rounded-full cursor-pointer 
+                hover:opacity-90`}>
+                    View Admin Page
+            </Link>
         </form>
     );
 }

@@ -50,11 +50,7 @@ export default function OrdersPage() {
   const [refundResult, setRefundResult] =
     useState<CreateRefundResponse | null>(null);
 
-  /*
-   * -----------------------------------------
-   * Customer session
-   * -----------------------------------------
-   */
+  //  Customer session
 
   useEffect(() => {
     const storedCustomer = getCustomerSession();
@@ -141,8 +137,6 @@ export default function OrdersPage() {
           //  Close the form after successful processing.
           setRefundModalOpen(false);
 
-          //  Keep the result available so it can be
-            // displayed to the customer.
           setRefundOrder(null);
         },
       }
