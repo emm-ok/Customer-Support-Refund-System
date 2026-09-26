@@ -14,9 +14,13 @@ WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 COPY --from=dependencies /app/node_modules ./node_modules
 
 COPY package*.json ./
+COPY tsconfig.json ./
 COPY next.config.ts ./
 
 COPY app ./app
